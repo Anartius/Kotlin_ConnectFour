@@ -41,8 +41,48 @@ fun main() {
             }
         }
     }
+
     println("""
         $firstPlayersName VS $secondPlayersName
         ${boardSize[0]} X ${boardSize[1]} board
         """.trimIndent())
+
+    val board = boardCreate(boardSize)
+
+}
+
+fun boardCreate (boardSize: List<Int>) : MutableList<MutableList<Char>> {
+    val firstLane = mutableListOf<Char>()
+    for (i in 1..boardSize[1]) {
+        firstLane.add(' ')
+        firstLane.add(i.digitToChar())
+    }
+    firstLane.add(' ')
+
+    val board = mutableListOf(firstLane)
+
+    val line = mutableListOf<Char>()
+    for (i in 0 until boardSize[1]) {
+        line.add('║')
+        line.add(' ')
+    }
+    line.add('║')
+
+    repeat(boardSize[0]) { board.add(line) }
+
+    val lastLine = mutableListOf<Char>()
+    lastLine.add('╚')
+    lastLine.add('═')
+    for (i in 0 until boardSize[1] - 1) {
+        lastLine.add('╩')
+        lastLine.add('═')
+    }
+    lastLine.add('╝')
+
+    board.add(lastLine)
+
+    for (i in 0..boardSize[0] + 1) {
+        println(board[i].joinToString(""))
+    }
+    return board
 }
