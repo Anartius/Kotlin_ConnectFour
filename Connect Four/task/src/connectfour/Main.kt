@@ -1,5 +1,7 @@
 package connectfour
 
+import java.lang.NumberFormatException
+
 fun main() {
     println("Connect four")
     println("First player's name: ")
@@ -49,6 +51,51 @@ fun main() {
 
     val board = boardCreate(boardSize)
 
+    var freePosition: Int
+    var columnNumber: Int
+    var nextStep: String
+    var isPlayer1 = true
+
+    while (true) {
+        if (isPlayer1) {
+            println("$firstPlayersName's turn:")
+        } else {
+            println("$secondPlayersName's turn:")
+        }
+        nextStep = readLine()!!
+        if (nextStep == "end") {
+            println("Game over!")
+            return
+        } else{
+            try {
+                columnNumber = nextStep.toInt()
+            } catch (e: NumberFormatException) {
+                println("Incorrect column number")
+                continue
+            }
+
+            if (columnNumber < 1 || columnNumber > boardSize[1]) {
+                println("The column number is out of range (1 - ${boardSize[1]})")
+                continue
+            }
+
+            freePosition = checkColumn(columnNumber, boardSize, board)
+
+            if (freePosition == -1) {
+                println("Column $columnNumber is full")
+                continue
+            } else {
+                if (isPlayer1) {
+                    board[freePosition][columnNumber * 2 - 1] = 'o'
+                    isPlayer1 = false
+                } else {
+                    board[freePosition][columnNumber * 2 - 1] = '*'
+                    isPlayer1 = true
+                }
+            }
+        }
+        printBoard(board)
+    }
 }
 
 fun boardCreate (boardSize: List<Int>) : MutableList<MutableList<Char>> {
@@ -68,7 +115,7 @@ fun boardCreate (boardSize: List<Int>) : MutableList<MutableList<Char>> {
     }
     line.add('║')
 
-    repeat(boardSize[0]) { board.add(line) }
+    repeat(boardSize[0]) { board.add(line.toMutableList()) }
 
     val lastLine = mutableListOf<Char>()
     lastLine.add('╚')
@@ -81,8 +128,21 @@ fun boardCreate (boardSize: List<Int>) : MutableList<MutableList<Char>> {
 
     board.add(lastLine)
 
-    for (i in 0..boardSize[0] + 1) {
+    printBoard(board)
+    return board
+}
+
+fun printBoard (board: MutableList<MutableList<Char>>) {
+    for (i in 0 until board.size) {
         println(board[i].joinToString(""))
     }
-    return board
+}
+
+fun checkColumn (columnNumber: Int,
+                 boardSize: MutableList<Int>,
+                 board: MutableList<MutableList<Char>>) :Int {
+    for (i in boardSize[0] downTo 1) {
+        if (board[i][columnNumber * 2 - 1] == ' ') return i
+    }
+    return -1
 }
