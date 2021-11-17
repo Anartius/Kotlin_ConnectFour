@@ -3,7 +3,7 @@ hyperskill_project:
   ide_files: https://stepik.org/media/attachments/lesson/570575/additional_files.json
   is_template_based: false
   use_ide: true
-update_date: Thu, 21 Oct 2021 14:32:51 UTC
+update_date: Wed, 17 Nov 2021 17:21:51 UTC
 stages:
 - id: 1002
   step: 14778
@@ -19,7 +19,7 @@ stages:
   is_completed: true
 - id: 1006
   step: 14782
-  is_completed: false
+  is_completed: true
 topics:
   0:
   - title: Binary numbers
@@ -28,12 +28,8 @@ topics:
     theory_id: 8788
   - title: Units of information
     theory_id: 6865
-  - title: Computer algorithms
-    theory_id: 4953
   - title: Regexps basics
     theory_id: 7580
-  - title: Computer programming
-    theory_id: 8739
   - title: Introduction to Kotlin
     theory_id: 4350
   - title: Basic literals
@@ -54,12 +50,6 @@ topics:
     theory_id: 4515
   - title: Increment and decrement
     theory_id: 10776
-  - title: Ordering and total order
-    theory_id: 9253
-  - title: Ordering of compound objects
-    theory_id: 9457
-  - title: Functions
-    theory_id: 13884
   - title: Invoking functions
     theory_id: 4575
   - title: Standard input
@@ -100,7 +90,7 @@ topics:
     theory_id: 4652
   - title: Regexps
     theory_id: 10721
-  - title: Mutable list
+  - title: Introduction to MutableList
     theory_id: 14879
   - title: Work with MutableLists
     theory_id: 14902
@@ -134,6 +124,8 @@ topics:
   - title: Jumps and returns
     theory_id: 6165
   4:
+  - title: Computer programming
+    theory_id: 8739
   - title: What is a bug
     theory_id: 5504
   - title: Introduction to OOP

@@ -47,90 +47,140 @@ fun main() {
         }
     }
 
+    // Input number of games
+    var numberOfGames: Int
+    while (true) {
+        println(
+            """
+        Do you want to play single or multiple games?
+        For a single game, input 1 or press Enter
+        Input a number of games:
+    """.trimIndent()
+        )
+        val inputNumberOfGames = readLine()!!
+        if (inputNumberOfGames.isEmpty() || inputNumberOfGames == "1") {
+            numberOfGames = 1
+            break
+        } else {
+            try {
+                numberOfGames = inputNumberOfGames.toInt()
+                if (numberOfGames < 1) {
+                    throw NumberFormatException()
+                } else break
+
+            } catch (e: NumberFormatException) {
+                println("Invalid input")
+                continue
+            }
+        }
+    }
+    val isSingleGame = numberOfGames == 1
+
     println("""
         $firstPlayersName VS $secondPlayersName
         ${boardSize[0]} X ${boardSize[1]} board
         """.trimIndent())
+    println(
+        if (isSingleGame) "Single game" else "Total $numberOfGames games"
+    )
 
-    // Creating and printing of game board.
-    val board = boardCreate(boardSize)
-
+    // Playing the game.
     var freePosition: Int
     var columnNumber: Int
     var nextStep: String
-    var isPlayer1 = true
+    var player1First = true
     var fourInLine: Boolean
     var fourInDiagonal: Boolean
+    var gamesCount = 1
+    var firstPlayerPoints = 0
+    var secondPlayerPoints = 0
 
-    // Playing the game.
-    while (true) {
-        if (isPlayer1) {
-            println("$firstPlayersName's turn:")
-        } else {
-            println("$secondPlayersName's turn:")
-        }
+    while (numberOfGames != 0) {
 
-        // Input players step.
-        nextStep = readLine()!!
-        if (nextStep == "end") {
-            println("Game over!")
-            return
-        } else{
-            // Check correction of column number.
-            try {
-                columnNumber = nextStep.toInt() - 1
-            } catch (e: NumberFormatException) {
-                println("Incorrect column number")
-                continue
-            }
+        if (!isSingleGame) println("Game #$gamesCount")
+        val board = boardCreate(boardSize)
+        var isPlayer1 = player1First
 
-            if (columnNumber < 0 || columnNumber > boardSize[1] - 1) {
-                println("The column number is out of range (1 - ${boardSize[1]})")
-                continue
-            }
-
-            // Check if the column isn't full.
-            freePosition = checkColumn(columnNumber, boardSize, board)
-
-            if (freePosition == -1) {
-                println("Column ${columnNumber + 1} is full")
-                continue
+        while (true) {
+            if (isPlayer1) {
+                println("$firstPlayersName's turn:")
             } else {
-                // If column isn't full writing marker and checking winning condition.
-                if (isPlayer1) {
-                    board[freePosition][columnNumber] = "o"
-                    fourInLine = checkWinByLine(board)
-                    fourInDiagonal = checkWinByDiagonal(board, false)
-                    if (fourInLine || fourInDiagonal) {
-                        printBoard(board)
-                        println("Player $firstPlayersName won")
-                        println("Game over!")
-                        return
-                    }
-                    isPlayer1 = false
+                println("$secondPlayersName's turn:")
+            }
+
+            // Input players step.
+            nextStep = readLine()!!
+            if (nextStep == "end") {
+                println("Game over!")
+                return
+            } else {
+                // Check correction of column number.
+                try {
+                    columnNumber = nextStep.toInt() - 1
+                } catch (e: NumberFormatException) {
+                    println("Incorrect column number")
+                    continue
+                }
+
+                if (columnNumber < 0 || columnNumber > boardSize[1] - 1) {
+                    println("The column number is out of range (1 - ${boardSize[1]})")
+                    continue
+                }
+
+                // Check if the column isn't full.
+                freePosition = checkColumn(columnNumber, boardSize, board)
+
+                if (freePosition == -1) {
+                    println("Column ${columnNumber + 1} is full")
+                    continue
                 } else {
-                    board[freePosition][columnNumber] = "*"
-                    fourInLine = checkWinByLine(board)
-                    fourInDiagonal = checkWinByDiagonal(board, false)
-                    if (fourInLine || fourInDiagonal) {
-                        printBoard(board)
-                        println("Player $secondPlayersName won")
-                        println("Game over!")
-                        return
+                    // If column isn't full writing marker and checking winning condition.
+                    if (isPlayer1) {
+                        board[freePosition][columnNumber] = "o"
+                        fourInLine = checkWinByLine(board)
+                        fourInDiagonal = checkWinByDiagonal(board, false)
+                        if (fourInLine || fourInDiagonal) {
+                            printBoard(board)
+                            println("Player $firstPlayersName won")
+                            firstPlayerPoints += 2
+                            break
+                        }
+                        isPlayer1 = false
+                    } else {
+                        board[freePosition][columnNumber] = "*"
+                        fourInLine = checkWinByLine(board)
+                        fourInDiagonal = checkWinByDiagonal(board, false)
+                        if (fourInLine || fourInDiagonal) {
+                            printBoard(board)
+                            println("Player $secondPlayersName won")
+                            secondPlayerPoints += 2
+                            break
+                        }
+                        isPlayer1 = true
                     }
-                    isPlayer1 = true
                 }
             }
+
+            printBoard(board)
+
+            if (boardIsFull(board)) {
+                println("It is a draw")
+                firstPlayerPoints++
+                secondPlayerPoints++
+                break
+            }
         }
 
-        printBoard(board)
+        numberOfGames--
+        gamesCount++
+        player1First = !player1First
 
-        if (boardIsFull(board)) {
-            println("It is a draw")
-            println("Game over!")
-            return
-        }
+        println("""
+            Score
+            $firstPlayersName: $firstPlayerPoints $secondPlayersName: $secondPlayerPoints
+        """.trimIndent())
     }
+    println("Game over!")
 }
 
 // Creating game board and print it.
@@ -173,8 +223,8 @@ fun printBoard(board: MutableList<MutableList<String>>) {
 // Checking if column isn't full. If column is full return -1,
 // else return max index of free position.
 fun checkColumn(columnNumber: Int,
-                 boardSize: MutableList<Int>,
-                 board: MutableList<MutableList<String>>) : Int {
+                boardSize: MutableList<Int>,
+                board: MutableList<MutableList<String>>) : Int {
     for (i in boardSize[0] downTo 1) {
         if (board[i][columnNumber] == " ") return i
     }

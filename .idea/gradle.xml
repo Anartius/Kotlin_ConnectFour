@@ -13,6 +13,9 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Connect Four/task" />
+            <option value="$PROJECT_DIR$/Topics/Debugging techniques/Find the error" />
+            <option value="$PROJECT_DIR$/Topics/Debugging techniques/Log events" />
+            <option value="$PROJECT_DIR$/Topics/Debugging techniques/Theory" />
             <option value="$PROJECT_DIR$/util" />
           </set>
         </option>
